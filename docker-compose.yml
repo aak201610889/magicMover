@@ -1,0 +1,24 @@
+version: '3'
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  app:
+    build: .
+    container_name: magic-mover
+    ports:
+      - "5002:5001"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/magic_mover
+      - MONGO_URI_TESTING=mongodb://mongo:27017/magic_movertesting
+
+    depends_on:
+      - mongo
+
+volumes:
+  mongo-data:

@@ -1,0 +1,32 @@
+stages:
+  - build
+  - cleanup  # Add cleanup stage here
+
+# Define environment variables
+variables:
+  DOCKER_IMAGE: "magic-mover"  # Image name for the app
+  IMAGE_TAG: "main"  # Tag for the image based on the commit SHA
+
+# Cache Docker layers to speed up builds
+cache:
+  paths:
+    - .docker/
+
+# Build the Docker image
+build:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - echo "Building Docker image for the app..."
+    - docker-compose -f docker-compose.yml build  # Update path if necessary
+
+# Clean up containers (optional)
+cleanup:
+  stage: cleanup
+  image: docker:latest
+  script:
+    - echo "Cleaning up Docker containers..."
+    - docker-compose -f docker-compose.yml down  # Update path if necessary
+  when: always
